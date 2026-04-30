@@ -17,32 +17,25 @@ function toggleElementsByClass(className, shouldHide) {
   });
 }
 
-function fixNameContainer(shouldFix) {
-  document
-    .querySelectorAll(".ranking-page-table__column--main")
-    .forEach(column => {
-      if (shouldFix) {
-        column.style.width = "auto";
-        column.style.minWidth = "250px";
+function toggleRankChangeColumns(shouldHide) {
+  const selectors = [
+    ".ranking-page-table__column--rank-change",
+    ".ranking-page-table__column--rank-change-none"
+  ];
 
-        const name = column.querySelector(".ranking-page-table-main__link-text");
-        if (name) {
-          name.style.maxWidth = "none";
-          name.style.overflow = "visible";
-          name.style.textOverflow = "initial";
-        }
-      } else {
-        column.style.width = "";
-        column.style.minWidth = "";
-
-        const name = column.querySelector(".ranking-page-table-main__link-text");
-        if (name) {
-          name.style.maxWidth = "";
-          name.style.overflow = "";
-          name.style.textOverflow = "";
-        }
-      }
+  selectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => {
+      el.style.display = shouldHide ? 'none' : '';
     });
+  });
+
+  document.querySelectorAll(".ranking-page-table__column--main").forEach(el => {
+    if (shouldHide) {
+      el.setAttribute('colspan', '2');
+    } else {
+      el.removeAttribute('colspan');
+    }
+  });
 }
 
 function runRemovals() {
@@ -50,17 +43,9 @@ function runRemovals() {
 
   toggleElementsByClass(".flag-team", currentSettings.removeTeams);
 
-  toggleElementsByClass(
-    ".ranking-page-table__column--rank-change",
-    currentSettings.removeRankChanges
-  );
-  toggleElementsByClass(
-    ".ranking-page-table__column--rank-change-none",
-    currentSettings.removeRankChanges
-  );
-  fixNameContainer(currentSettings.removeRankChanges);
+  toggleRankChangeColumns(currentSettings.removeRankChanges);
 
-  toggleElementsByClass(".flag-country", currentSettings.removeCountry);
+  toggleElementsByClass(".flag-country:not(.flag-country--flat)", currentSettings.removeCountry);
 }
 
 function loadSettings(callback) {
